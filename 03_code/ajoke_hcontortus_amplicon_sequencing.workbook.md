@@ -1,1 +1,1 @@
-$(basename $PWD).workbook.md
+
