@@ -36,3 +36,18 @@
 
 ---
 ### 1. How many worms have sequencing data?
+
+```bash
+# counting lines using word count or "wc"
+wc -l *fastq
+```
+- this prints all the information, however, it still needs some interpretation. 
+- how about we do something slightly more sophisticated. Just a little. Lets use a "loop"
+
+```bash
+# basic loop, and we'll print the name
+for i in *_1.fastq; do
+    echo -e "${NAME}"
+    done
+```
+- try this. It should print a list of the file names
