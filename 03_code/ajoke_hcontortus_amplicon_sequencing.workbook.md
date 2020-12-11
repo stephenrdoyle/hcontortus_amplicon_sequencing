@@ -62,9 +62,10 @@ for NAME in *_1.fastq; do
     echo -e "${NAME}\t${READS}" >> raw_reads.count ;     
     done 
 
-```
 # create new file
 > new.file
 
 # add to an existing file
 >> new.file
+```
+
