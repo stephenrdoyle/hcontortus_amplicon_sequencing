@@ -42,7 +42,7 @@
 wc -l *fastq
 ```
 - this prints all the information, however, it still needs some interpretation. 
-- how about we do something slightly more sophisticated. Just a little. Lets use a "loop"
+- how about we do something slightly more sophisticated. Just a little. Lets use a "for loop"
 
 ```bash
 # basic loop, and we'll print the name
