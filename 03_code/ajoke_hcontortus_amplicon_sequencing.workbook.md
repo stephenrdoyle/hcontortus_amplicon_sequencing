@@ -47,7 +47,7 @@ wc -l *fastq
 ```bash
 # basic loop, and we'll print the name
 for NAME in *_1.fastq; do
-    echo -e "${NAME}"
+    echo -e "${NAME}";
     done
 ```
 - try this. It should print a list of the file names
@@ -57,9 +57,9 @@ for NAME in *_1.fastq; do
 ```bash
 for NAME in *_1.fastq; do 
     # count the lines, and extract the 1st column using "awk" and divide it by 4
-    READS=$( wc -l ${NAME} | awk '{print $1/4}' ) 
+    READS=$( wc -l ${NAME} | awk '{print $1/4}' ) ;
     # print the name and read count
-    echo -e "${NAME}\t${READS}"     
+    echo -e "${NAME}\t${READS}";     
     done 
 
 ```
