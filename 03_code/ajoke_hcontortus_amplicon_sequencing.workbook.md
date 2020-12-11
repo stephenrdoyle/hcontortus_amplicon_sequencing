@@ -60,6 +60,6 @@ for NAME in *_1.fastq; do
     READS=$( wc -l ${NAME} | awk '{print $1/4}' ) 
     # print the name and read count
     echo -e "${NAME}\t${READS}"     
-    done
+    done 
 
 ```
