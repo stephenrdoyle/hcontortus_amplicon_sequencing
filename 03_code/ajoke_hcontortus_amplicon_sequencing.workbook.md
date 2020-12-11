@@ -59,7 +59,12 @@ for NAME in *_1.fastq; do
     # count the lines, and extract the 1st column using "awk" and divide it by 4
     READS=$( wc -l ${NAME} | awk '{print $1/4}' ) ;
     # print the name and read count
-    echo -e "${NAME}\t${READS}";     
+    echo -e "${NAME}\t${READS}" >> raw_reads.count ;     
     done 
 
 ```
+# create new file
+> new.file
+
+# add to an existing file
+>> new.file
