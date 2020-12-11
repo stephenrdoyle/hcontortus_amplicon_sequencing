@@ -53,6 +53,7 @@ for NAME in *_1.fastq; do
 - try this. It should print a list of the file names
 
 
+- if this works, lets add some extra commands to calculate the number of reads
 ```bash
 for NAME in *_1.fastq; do 
     # count the lines, and extract the 1st column using "awk" and divide it by 4
