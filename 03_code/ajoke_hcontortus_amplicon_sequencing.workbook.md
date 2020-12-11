@@ -46,7 +46,7 @@ wc -l *fastq
 
 ```bash
 # basic loop, and we'll print the name
-for i in *_1.fastq; do
+for NAME in *_1.fastq; do
     echo -e "${NAME}"
     done
 ```
