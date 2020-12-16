@@ -67,5 +67,12 @@ for NAME in *_1.fastq; do
 
 # add to an existing file
 >> new.file
-```
-
+```bash
+# count the number of reads
+for NAME in *1.fastq; do READS=$( wc -1)${NAME} | awk {print $1/4} ); echo -e "${NAME}\t${READS}" >> raw_reads.count; done
+# fastqc
+for NAME in *fastq; do fastqc $NAME; done
+# multiqc
+multiqc ..
+firefox multiqc_report.html
+Total number of reads for ALL18 Dataset = 3506725 with 76 samples. The total number of reads expected per 
