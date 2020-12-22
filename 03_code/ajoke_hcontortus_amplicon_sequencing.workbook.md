@@ -76,3 +76,12 @@ for NAME in *fastq; do fastqc $NAME; done
 multiqc ..
 firefox multiqc_report.html
 Total number of reads for ALL18 Dataset = 3506725 with 76 samples. The total number of reads expected per 
+
+
+
+
+# mapping reads using a loop
+for NAME in $( ls -1 *_1.fastq | sed 's/_1.fastq//g'); do
+    bwa mem haemonchus_contortus.PRJEB506.WBPS15.genomic.fa.gz ${NAME}_1.fastq ${NAME}_2.fastq > ${NAME}.mapping.sam ;
+    
+    done
