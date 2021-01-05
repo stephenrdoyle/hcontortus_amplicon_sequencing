@@ -121,3 +121,15 @@ hcontortus_chr1_Celeg_TT_arrow_pilon	9203534	9203804	PCR21
 hcontortus_chr1_Celeg_TT_arrow_pilon	9400550	9400843	PCR22
 hcontortus_chr1_Celeg_TT_arrow_pilon	9603081	9603352	PCR23
 hcontortus_chr1_Celeg_TT_arrow_pilon	9801439	9801745	PCR24
+
+
+# extract reads that map to amplicons 
+
+samtools view -b -L btub.amplicons.bed XQTL_F3_L3_n5k_IVM_pre_01_23204_8_1.merged.sorted.marked.realigned.bam -o test.bam
+
+
+
+
+# coverage of amplicons 
+
+bedtools multicov -bams XQTL_F3_L3_n5k_IVM_pre_01_23204_8_1.merged.sorted.marked.realigned.bam -bed btub.amplicons.bed
