@@ -85,3 +85,39 @@ for NAME in $( ls -1 *_1.fastq | sed 's/_1.fastq//g'); do
     bwa mem haemonchus_contortus.PRJEB506.WBPS15.genomic.fa.gz ${NAME}_1.fastq ${NAME}_2.fastq > ${NAME}.mapping.sam ;
     
     done
+
+
+
+
+
+# getting amplicon coordinates 
+# working dir: /nfs/users/nfs_s/sd21/lustre118_link/hc/AMPLICONS/primers
+
+cat primers.Hc_XQTL_BZ_chr1_5-10Mb.10000bp_windows_200000bp_apart.database | cut -f3,6,2 | sed -e 's/:/\t/g' -e 's/-/\t/g' -e 's/_P/\tP/g' | awk '{print $2,$3,$8,$1}' OFS="\t" | grep -v "primer"
+
+#> bed file - chromosome, start, end, name
+
+hcontortus_chr1_Celeg_TT_arrow_pilon	5007667	5007972	PCR1
+hcontortus_chr1_Celeg_TT_arrow_pilon	5206863	5207162	PCR2
+hcontortus_chr1_Celeg_TT_arrow_pilon	5407809	5408126	PCR3
+hcontortus_chr1_Celeg_TT_arrow_pilon	5606291	5606592	PCR4
+hcontortus_chr1_Celeg_TT_arrow_pilon	5807329	5807610	PCR5
+hcontortus_chr1_Celeg_TT_arrow_pilon	6007701	6007985	PCR6
+hcontortus_chr1_Celeg_TT_arrow_pilon	6208711	6209018	PCR7
+hcontortus_chr1_Celeg_TT_arrow_pilon	6402081	6402349	PCR8
+hcontortus_chr1_Celeg_TT_arrow_pilon	6806063	6806361	PCR9
+hcontortus_chr1_Celeg_TT_arrow_pilon	7007057	7007329	PCR10
+hcontortus_chr1_Celeg_TT_arrow_pilon	7204321	7204609	PCR11
+hcontortus_chr1_Celeg_TT_arrow_pilon	7401460	7401770	PCR12
+hcontortus_chr1_Celeg_TT_arrow_pilon	7604940	7605213	PCR13
+hcontortus_chr1_Celeg_TT_arrow_pilon	7809354	7809643	PCR14
+hcontortus_chr1_Celeg_TT_arrow_pilon	8003534	8003806	PCR15
+hcontortus_chr1_Celeg_TT_arrow_pilon	8207374	8207682	PCR16
+hcontortus_chr1_Celeg_TT_arrow_pilon	8403840	8404137	PCR17
+hcontortus_chr1_Celeg_TT_arrow_pilon	8603538	8603843	PCR18
+hcontortus_chr1_Celeg_TT_arrow_pilon	8809661	8809953	PCR19
+hcontortus_chr1_Celeg_TT_arrow_pilon	9004304	9004619	PCR20
+hcontortus_chr1_Celeg_TT_arrow_pilon	9203534	9203804	PCR21
+hcontortus_chr1_Celeg_TT_arrow_pilon	9400550	9400843	PCR22
+hcontortus_chr1_Celeg_TT_arrow_pilon	9603081	9603352	PCR23
+hcontortus_chr1_Celeg_TT_arrow_pilon	9801439	9801745	PCR24
