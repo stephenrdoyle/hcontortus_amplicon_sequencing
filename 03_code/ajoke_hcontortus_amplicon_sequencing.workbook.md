@@ -126,7 +126,7 @@ hcontortus_chr1_Celeg_TT_arrow_pilon	9801439	9801745	PCR24
 # extract reads that map to amplicons 
 
 samtools view -b -L btub.amplicons.bed XQTL_F3_L3_n5k_IVM_pre_01_23204_8_1.merged.sorted.marked.realigned.bam -o test.bam
-
+samtools flagstat test.bam
 
 
 
