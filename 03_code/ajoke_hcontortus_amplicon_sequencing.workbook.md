@@ -138,7 +138,16 @@ bedtools multicov -bams XQTL_F3_L3_n5k_IVM_pre_01_23204_8_1.merged.sorted.marked
 
 
 
-# SNP calling
+#----- SNP calling -----#
+# Run this in the directory containing your bam files
+# you will also need in this directory
+#--- the reference: HAEM_V4_final.chr.fa
+#--- your bed file containing the regions of interest: regions.bed
+
+
+# first, you need to generate a file containing all of the bam files that you want to call variants in:
 ls -1 *bam > bams.list
+
+# this is a long command, containing two parts - the first is called "mpileup" which identifies all of the bases in the reads, and does some filtering, and the second is "call" which identifies the variant positions. You should end up with a file called "variants.vcf.gz"
 
 bcftools mpileup --ignore-RG -Ou --min-MQ 20 --adjust-MQ 50 --bam-list bams.list --fasta-ref HAEM_V4_final.chr.fa --skip-indels -E --regions-file regions.bed | bcftools call -vm -Oz -o variants.vcf.gz
