@@ -133,3 +133,12 @@ samtools flagstat test.bam
 # coverage of amplicons 
 
 bedtools multicov -bams XQTL_F3_L3_n5k_IVM_pre_01_23204_8_1.merged.sorted.marked.realigned.bam -bed btub.amplicons.bed
+
+
+
+
+
+# SNP calling
+ls -1 *bam > bams.list
+
+bcftools mpileup --ignore-RG -Ou --min-MQ 20 --adjust-MQ 50 --bam-list bams.list --fasta-ref HAEM_V4_final.chr.fa --skip-indels -E --regions-file regions.bed | bcftools call -vm -Oz -o variants.vcf.gz
