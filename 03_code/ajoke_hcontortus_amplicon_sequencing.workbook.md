@@ -151,3 +151,143 @@ ls -1 *bam > bams.list
 # this is a long command, containing two parts - the first is called "mpileup" which identifies all of the bases in the reads, and does some filtering, and the second is "call" which identifies the variant positions. You should end up with a file called "variants.vcf.gz"
 
 bcftools mpileup --ignore-RG -Ou --min-MQ 20 --adjust-MQ 50 --bam-list bams.list --fasta-ref HAEM_V4_final.chr.fa --skip-indels -E --regions-file regions.bed | bcftools call -vm -Oz -o variants.vcf.gz
+
+
+
+#--- SNP analysis---#
+Some questions we want to answer will be
+- how many variants are present?
+- how many variants per sample?
+- how many samples share variants?
+- how many variants differ between the parental strains?
+- do any of the variants in the F2,F2,F3 samples look more like one parent than the other?
+- what to these patterns of variation look like in the genome?
+
+
+
+- how many variants are present?
+The first variants file Ajoke has provided is called "variants.vcf.gz" - thsi is simply the output name from the script above, but we'll need to give these more sensible names
+
+- we can use vcftools to check the number of variants
+vcftools --gzvcf variants.vcf.gz
+
+#> After filtering, kept 78 out of 78 Individuals
+#> After filtering, kept 22 out of a possible 22 Sites
+
+- so, only 22 SNPs in 78 individuals. We can quickly look at allele frequnecies of the 22 SNPs, and at the same time, look at the positions to determine which amplicons have data (normally we'd know this, however, Ajoke has not told me which samples/data SNP calling has been performed on, so we can work it out from the data)
+
+vcftools --gzvcf variants.vcf.gz --site-pi
+
+#> geenrated a file called "out.sites.pi". Looking using "cat out.sites.pi" produces the following output
+
+CHROM	POS	PI
+hcontortus_chr1_Celeg_TT_arrow_pilon	8603603	0.2865
+hcontortus_chr1_Celeg_TT_arrow_pilon	8603630	0.353921
+hcontortus_chr1_Celeg_TT_arrow_pilon	8603631	0.498261
+hcontortus_chr1_Celeg_TT_arrow_pilon	8603645	0.0849673
+hcontortus_chr1_Celeg_TT_arrow_pilon	8603660	0.0861856
+hcontortus_chr1_Celeg_TT_arrow_pilon	8603675	0.392157
+hcontortus_chr1_Celeg_TT_arrow_pilon	8603728	0.279898
+hcontortus_chr1_Celeg_TT_arrow_pilon	8603732	0.0149254
+hcontortus_chr1_Celeg_TT_arrow_pilon	8603735	0.405664
+hcontortus_chr1_Celeg_TT_arrow_pilon	8603740	0.252723
+hcontortus_chr1_Celeg_TT_arrow_pilon	8603767	0.29281
+hcontortus_chr1_Celeg_TT_arrow_pilon	8603768	0.2663
+hcontortus_chr1_Celeg_TT_arrow_pilon	8603796	0.437196
+hcontortus_chr1_Celeg_TT_arrow_pilon	8603800	0.176523
+hcontortus_chr1_Celeg_TT_arrow_pilon	8603805	0.415778
+hcontortus_chr1_Celeg_TT_arrow_pilon	8809691	0.134576
+hcontortus_chr1_Celeg_TT_arrow_pilon	8809717	0.109317
+hcontortus_chr1_Celeg_TT_arrow_pilon	9801444	0.0962025
+hcontortus_chr1_Celeg_TT_arrow_pilon	9801463	0.192176
+hcontortus_chr1_Celeg_TT_arrow_pilon	9801524	0.468202
+hcontortus_chr1_Celeg_TT_arrow_pilon	9801571	0.082361
+hcontortus_chr1_Celeg_TT_arrow_pilon	9801614	0.460535
+
+- most SNPs have moderate SNP frequency - this is good and expected in the genetic cross data. A couple of SNPs have low frequency, which "may" be noise. We can keep an eye on these later.
+- looking at the postions of the SNPs, and cross checking against the amplicon database, reveals these are BZ amplicons on chromosome 1, specific PCR18 (n=15), PCR19 (n=2), and PCR24 (n=5). Looking back at the amplicon coverage data (ALL1724), these data make sense, as there is reasonable coverage on these amplicons, whereas there was worse/poor coverage on the other amplicons in that pool.
+
+
+
+
+
+- we have 4 groups of individuals in the experiment - ISE, UGA, 3_18_BZC, and 3_18_F2
+- want to calculate allele frequncies for each group - we are trying to find SNPs that differ between the parental (ISE vs UGA) samples, and then determine if the cross samples ( 3_18_BZC, and 3_18_F2) look more, less, or intermediate of the parentals.
+- made 4 files containing the sample IDs
+3_18_BZC.list
+3_18_F2.list
+ISE.list
+UGA.list
+
+- can loop over these to calculate allele frequency pre group
+
+for i in *list; do 
+    vcftools --gzvcf variants.vcf.gz --keep ${i} --site-pi --out ${i%.list}; 
+    done
+
+#> this outputs 4 files, one for each population, containing the allele frequency data.
+
+# want to generate some visualisations of the data
+- first is a PCA, which we will perform in R. This requires a metadata file, that contains a column containing the "population" IDs and a column containing the "sample" IDs.
+- eg. "metadata.txt" contains (note all fo the samples are there, this is just showing the top part of the file): 
+
+population	sample_ID
+3/18BZC	157.bams
+3/18BZC	158.bams
+3/18BZC	159.bams
+3/18BZC	160.bams
+3/18BZC	161.bams
+3/18BZC	162.bams
+3/18BZC	163.bams
+3/18BZC	164.bams
+3/18BZC	165.bams
+.
+.
+.
+
+- load up R
+-
+R
+
+# load the lirbaries - note that these might need to be installed.
+library(tidyverse)
+library(gdsfmt)
+library(SNPRelate)
+library(ggsci)
+
+# load the variants
+snpgdsClose(genofile)
+vcf.in <- "variants.vcf.gz"
+gds<-snpgdsVCF2GDS(vcf.in, "variants.gds", method="biallelic.only")
+genofile <- snpgdsOpen(gds)
+
+# perfrom a PCA analysis
+pca <-snpgdsPCA(genofile, num.thread=2,autosome.only = F)
+
+samples <- as.data.frame(pca$sample.id)
+colnames(samples) <- "name"
+metadata <- read.table("metadata.txt", header=T)
+
+
+data <- data.frame(sample.id = pca$sample.id,
+                  EV1 = pca$eigenvect[,1],  
+                  EV2 = pca$eigenvect[,2],
+                  EV3 = pca$eigenvect[,3],
+                  EV4 = pca$eigenvect[,4],
+                  EV5 = pca$eigenvect[,5],
+                  EV6 = pca$eigenvect[,6],    
+                  POPULATION = metadata$population,
+                  stringsAsFactors = FALSE)
+
+
+ggplot(data,aes(EV5, EV6, col = POPULATION, label = POPULATION)) +
+     geom_point(size=4) +
+     theme_bw() +
+     labs(title="BZ variants - ALL1724",
+          x = paste0("PC1 variance: ",round(pca$varprop[1]*100,digits=2),"%"),
+          y = paste0("PC2 variance: ",round(pca$varprop[2]*100,digits=2),"%")) +
+          scale_colour_npg()
+
+ggsave("plot_PCA_BZ_ALL1724.png")
+
+- this didnt really produce the result I was expecting - there wasnt such a clear distinction between the parental populaitons. However, there wasnt many samples in each population, and very few SNPs overall. 
