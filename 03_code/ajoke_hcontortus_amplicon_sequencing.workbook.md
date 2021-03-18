@@ -41,7 +41,7 @@
 # counting lines using word count or "wc"
 wc -l *fastq
 ```
-- this prints all the information, however, it still needs some interpretation. 
+- this prints all the information, however, it still needs some interpretation.
 - how about we do something slightly more sophisticated. Just a little. Lets use a "for loop"
 
 ```bash
@@ -55,12 +55,12 @@ for NAME in *_1.fastq; do
 
 - if this works, lets add some extra commands to calculate the number of reads
 ```bash
-for NAME in *_1.fastq; do 
+for NAME in *_1.fastq; do
     # count the lines, and extract the 1st column using "awk" and divide it by 4
     READS=$( wc -l ${NAME} | awk '{print $1/4}' ) ;
     # print the name and read count
     echo -e "${NAME}\t${READS}" >> raw_reads.count ;     
-    done 
+    done
 
 # create new file
 > new.file
@@ -75,7 +75,7 @@ for NAME in *fastq; do fastqc $NAME; done
 # multiqc
 multiqc ..
 firefox multiqc_report.html
-Total number of reads for ALL18 Dataset = 3506725 with 76 samples. The total number of reads expected per 
+Total number of reads for ALL18 Dataset = 3506725 with 76 samples. The total number of reads expected per
 
 
 
@@ -83,14 +83,14 @@ Total number of reads for ALL18 Dataset = 3506725 with 76 samples. The total num
 # mapping reads using a loop
 for NAME in $( ls -1 *_1.fastq | sed 's/_1.fastq//g'); do
     bwa mem haemonchus_contortus.PRJEB506.WBPS15.genomic.fa.gz ${NAME}_1.fastq ${NAME}_2.fastq > ${NAME}.mapping.sam ;
-    
+
     done
 
 
 
 
 
-# getting amplicon coordinates 
+# getting amplicon coordinates
 # working dir: /nfs/users/nfs_s/sd21/lustre118_link/hc/AMPLICONS/primers
 
 cat primers.Hc_XQTL_BZ_chr1_5-10Mb.10000bp_windows_200000bp_apart.database | cut -f3,6,2 | sed -e 's/:/\t/g' -e 's/-/\t/g' -e 's/_P/\tP/g' | awk '{print $2,$3,$8,$1}' OFS="\t" | grep -v "primer"
@@ -123,14 +123,14 @@ hcontortus_chr1_Celeg_TT_arrow_pilon	9603081	9603352	PCR23
 hcontortus_chr1_Celeg_TT_arrow_pilon	9801439	9801745	PCR24
 
 
-# extract reads that map to amplicons 
+# extract reads that map to amplicons
 
 samtools view -b -L btub.amplicons.bed XQTL_F3_L3_n5k_IVM_pre_01_23204_8_1.merged.sorted.marked.realigned.bam -o test.bam
 samtools flagstat test.bam
 
 
 
-# coverage of amplicons 
+# coverage of amplicons
 
 bedtools multicov -bams XQTL_F3_L3_n5k_IVM_pre_01_23204_8_1.merged.sorted.marked.realigned.bam -bed btub.amplicons.bed
 
@@ -151,9 +151,9 @@ ls -1 *bam > bams.list
 # this is a long command, containing two parts - the first is called "mpileup" which identifies all of the bases in the reads, and does some filtering, and the second is "call" which identifies the variant positions. You should end up with a file called "variants.vcf.gz"
 
 bcftools mpileup --ignore-RG -Ou --min-MQ 20 --adjust-MQ 50 --bam-list bams.list --fasta-ref HAEM_V4_final.chr.fa --skip-indels -E --regions-file regions.bed | bcftools call -vm -Oz -o variants.vcf.gz
+```
 
-
-
+```bash
 #--- SNP analysis---#
 Some questions we want to answer will be
 - how many variants are present?
@@ -221,15 +221,15 @@ UGA.list
 
 - can loop over these to calculate allele frequency pre group
 
-for i in *list; do 
-    vcftools --gzvcf variants.vcf.gz --keep ${i} --site-pi --out ${i%.list}; 
+for i in *list; do
+    vcftools --gzvcf variants.vcf.gz --keep ${i} --site-pi --out ${i%.list};
     done
 
 #> this outputs 4 files, one for each population, containing the allele frequency data.
 
 # want to generate some visualisations of the data
 - first is a PCA, which we will perform in R. This requires a metadata file, that contains a column containing the "population" IDs and a column containing the "sample" IDs.
-- eg. "metadata.txt" contains (note all fo the samples are there, this is just showing the top part of the file): 
+- eg. "metadata.txt" contains (note all fo the samples are there, this is just showing the top part of the file):
 
 population	sample_ID
 3/18BZC	157.bams
@@ -248,7 +248,8 @@ population	sample_ID
 - load up R
 -
 R
-
+```
+```R
 # load the lirbaries - note that these might need to be installed.
 library(tidyverse)
 library(gdsfmt)
@@ -289,5 +290,5 @@ ggplot(data,aes(EV5, EV6, col = POPULATION, label = POPULATION)) +
           scale_colour_npg()
 
 ggsave("plot_PCA_BZ_ALL1724.png")
-
-- this didnt really produce the result I was expecting - there wasnt such a clear distinction between the parental populaitons. However, there wasnt many samples in each population, and very few SNPs overall. 
+```
+- this didnt really produce the result I was expecting - there wasnt such a clear distinction between the parental populaitons. However, there wasnt many samples in each population, and very few SNPs overall.
