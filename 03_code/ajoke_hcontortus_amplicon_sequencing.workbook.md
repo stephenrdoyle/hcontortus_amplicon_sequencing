@@ -289,7 +289,7 @@ ggplot(data,aes(EV5, EV6, col = POPULATION, label = POPULATION)) +
           y = paste0("PC2 variance: ",round(pca$varprop[2]*100,digits=2),"%")) +
           scale_colour_npg()
 
-ggsave("plot_PCA_BZ_ALL1724.png")
+ggsave("aplot_PCA_BZ_ALL1724.png")
 ```
-![](../04_analysis/plot_PCA_BZ_ALL1724.png)
+![](../04_analysis/aplot_PCA_BZ_ALL1724.png)
 - this didnt really produce the result I was expecting - there wasnt such a clear distinction between the parental populaitons. However, there wasnt many samples in each population, and very few SNPs overall.
