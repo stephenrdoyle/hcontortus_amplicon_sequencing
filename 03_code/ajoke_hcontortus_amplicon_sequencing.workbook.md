@@ -292,4 +292,45 @@ ggplot(data,aes(EV5, EV6, col = POPULATION, label = POPULATION)) +
 ggsave("aplot_PCA_BZ_ALL1724.png")
 ```
 ![](../04_analysis/aplot_PCA_BZ_ALL1724.png)
-- this didnt really produce the result I was expecting - there wasnt such a clear distinction between the parental populaitons. However, there wasnt many samples in each population, and very few SNPs overall.
+- this didnt really produce the result I was expecting - there wasnt such a clear distinction between the parental populaitons. However, there wasnt many samples in each population, and very few SNPs overall. It might make a difference once we merge some of the different amplicon sets to increase the variants.
+- NOTE: on looking back at the data and sample IDs, each amplicon set - ie ALL18, ALL916, ALL1724 - have been PCRed on different samples, and so merging is not going to work. I guess this makes sense as perhaps all of the DNA was used in the PCR. Once we redo the experiment using all primers in a single tube, this should work better.
+- there are some tight little clusters, especially in the 3_18_F2 populaiton
+
+
+
+```R
+library(tidyverse)
+library(ggsci)
+library(patchwork)
+
+# list file names
+file_names <- list.files(path = "./",pattern = ".pi")
+
+# load data using file names, and make a formatted data frame
+data <- purrr::map_df(file_names, function(x) {
+	data <- read.delim(x, header = T, sep="\t")
+     data <- tibble::rowid_to_column(data, "NUM")
+	cbind(pop_id = gsub(".sites.pi","",x), data)
+	})
+
+
+plot1 <- ggplot(data,aes(POS,PI,col=pop_id)) +
+     geom_point() +
+     labs(title = "Nucleotide diversity per SNP in the genome, per population", x = "Position in the genome" , y = "Nucleotide diversity (Pi)", colour = "Population") +
+     theme_bw() +
+     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+     scale_color_npg()+
+     facet_grid(pop_id~.)
+
+plot2 <- ggplot(data,aes(as.factor(POS),PI)) +
+     geom_bar(aes(fill=pop_id),stat = "identity", position = "dodge") +
+     labs(title = "Nucleotide diversity per population for each SNP", x = "SNP position" , y = "Nucleotide diversity (Pi)", colour = "Population") +
+     theme_bw() +
+     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+     scale_fill_npg()
+
+plot1 + plot2 + plot_layout(ncol=1)
+
+ggsave("allele_frequencies.png")
+````
+![](../04_analysis/allele_frequencies.png)
