@@ -134,7 +134,7 @@ samtools flagstat test.bam
 
 bedtools multicov -bams XQTL_F3_L3_n5k_IVM_pre_01_23204_8_1.merged.sorted.marked.realigned.bam -bed btub.amplicons.bed
 
-
+```
 
 
 
