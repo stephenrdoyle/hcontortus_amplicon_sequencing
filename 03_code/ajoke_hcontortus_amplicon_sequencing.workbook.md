@@ -138,13 +138,13 @@ bedtools multicov -bams XQTL_F3_L3_n5k_IVM_pre_01_23204_8_1.merged.sorted.marked
 
 
 
-#----- SNP calling -----#
-# Run this in the directory containing your bam files
-# you will also need in this directory
-#--- the reference: HAEM_V4_final.chr.fa
-#--- your bed file containing the regions of interest: regions.bed
+# SNP calling
+- Run this in the directory containing your bam files
+- you will also need in this directory
+     - the reference: HAEM_V4_final.chr.fa
+     - your bed file containing the regions of interest: regions.bed
 
-
+```bash
 # first, you need to generate a file containing all of the bam files that you want to call variants in:
 ls -1 *bam > bams.list
 
@@ -168,7 +168,7 @@ Some questions we want to answer will be:
 ## how many variants are present?
 The first variants file Ajoke has provided is called "variants.vcf.gz" - thsi is simply the output name from the script above, but we'll need to give these more sensible names
 
-````bash
+```bash
 # we can use vcftools to check the number of variants
 vcftools --gzvcf variants.vcf.gz
 
