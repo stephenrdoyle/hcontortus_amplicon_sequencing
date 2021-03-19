@@ -306,7 +306,7 @@ ggsave("aplot_PCA_BZ_ALL1724.png")
 - there are some tight little clusters, especially in the 3_18_F2 populaiton
 
 
-### nucleotide diversity per population 
+### nucleotide diversity per population
 ```R
 library(tidyverse)
 library(ggsci)
@@ -343,3 +343,9 @@ plot1 + plot2 + plot_layout(ncol=1)
 ggsave("allele_frequencies.png")
 ````
 ![](../04_analysis/allele_frequencies.png)
+- top plot - position and frequency of SNPs in genome, per population
+     - currently difficult to interpret as there are multiple SNPs per amplicon (which is effectively indicated by the columns of points) - choosing one informative SNP per amplicon would make these easier to compare across populations, or analysing with amplicon haplotypes might work too.
+- bottom plot - SNP allele frequency per population
+     - a bit more informative, however, the data is still a bit noisy.
+     - part of the problem is there are only 3 amplicons, and they are some distance away from the BZ SNPs under selection  - without that data, it is difficult to put the noise in these SNPs in context.
+     - does show we need to select some "informative" SNPs - large differences between ISE and UGA parental populations is possibly sufficient, as we are looking for SNPs in the treated populaiton to shift in frequency towards the UGA resistant parent. Not clear if any do this consistently here, however, we possibly would expect they dont here based on the distance to SNPs under selection.
