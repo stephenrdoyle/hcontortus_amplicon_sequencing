@@ -154,7 +154,7 @@ bcftools mpileup --ignore-RG -Ou --min-MQ 20 --adjust-MQ 50 --bam-list bams.list
 ```
 
 
-#--- SNP analysis---#
+# SNP analysis
 Some questions we want to answer will be:
 - how many variants are present?
 - how many variants per sample?
@@ -164,11 +164,12 @@ Some questions we want to answer will be:
 - what to these patterns of variation look like in the genome?
 
 
-````bash
-- how many variants are present?
+
+## how many variants are present?
 The first variants file Ajoke has provided is called "variants.vcf.gz" - thsi is simply the output name from the script above, but we'll need to give these more sensible names
 
-- we can use vcftools to check the number of variants
+````bash
+# we can use vcftools to check the number of variants
 vcftools --gzvcf variants.vcf.gz
 
 #> After filtering, kept 78 out of 78 Individuals
