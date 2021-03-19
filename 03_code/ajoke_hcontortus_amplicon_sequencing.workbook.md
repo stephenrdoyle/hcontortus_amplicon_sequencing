@@ -175,7 +175,10 @@ vcftools --gzvcf variants.vcf.gz
 #> After filtering, kept 78 out of 78 Individuals
 #> After filtering, kept 22 out of a possible 22 Sites
 ```
-- so, only 22 SNPs in 78 individuals. We can quickly look at allele frequnecies of the 22 SNPs, and at the same time, look at the positions to determine which amplicons have data (normally we'd know this, however, Ajoke has not told me which samples/data SNP calling has been performed on, so we can work it out from the data)
+- so, only 22 SNPs in 78 individuals.
+
+## are the SNPs variable in our total sample set?
+We can quickly look at allele frequnecies of the 22 SNPs, and at the same time, look at the positions to determine which amplicons have data (normally we'd know this, however, Ajoke has not told me which samples/data SNP calling has been performed on, so we can work it out from the data)
 
 ```bash
 # calculated nucleotide diversity per position for all samples
@@ -213,14 +216,14 @@ hcontortus_chr1_Celeg_TT_arrow_pilon	9801614	0.460535
 
 
 
-
+## what is the allele frequency per population?
 - we have 4 groups of individuals in the experiment - ISE, UGA, 3_18_BZC, and 3_18_F2
 - want to calculate allele frequncies for each group - we are trying to find SNPs that differ between the parental (ISE vs UGA) samples, and then determine if the cross samples ( 3_18_BZC, and 3_18_F2) look more, less, or intermediate of the parentals.
 - made 4 files containing the sample IDs
-3_18_BZC.list
-3_18_F2.list
-ISE.list
-UGA.list
+     - 3_18_BZC.list
+     - 3_18_F2.list
+     - ISE.list
+     - UGA.list
 
 - can loop over these to calculate allele frequency pre group
 ```bash
@@ -231,6 +234,8 @@ for i in *list; do
 
 #> this outputs 4 files, one for each population, containing the allele frequency data.
 ```
+
+## visualising the data
 - want to generate some visualisations of the data
 - first is a PCA, which we will perform in R. This requires a metadata file, that contains a column containing the "population" IDs and a column containing the "sample" IDs.
 - eg. "metadata.txt" contains (note all fo the samples are there, this is just showing the top part of the file):
@@ -249,6 +254,8 @@ population	sample_ID
 .
 .
 ```
+
+### PCA
 - load up R
 
 ```R
@@ -299,7 +306,7 @@ ggsave("aplot_PCA_BZ_ALL1724.png")
 - there are some tight little clusters, especially in the 3_18_F2 populaiton
 
 
-
+### nucleotide diversity per population 
 ```R
 library(tidyverse)
 library(ggsci)
