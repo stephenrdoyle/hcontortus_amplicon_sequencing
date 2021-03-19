@@ -153,9 +153,9 @@ ls -1 *bam > bams.list
 bcftools mpileup --ignore-RG -Ou --min-MQ 20 --adjust-MQ 50 --bam-list bams.list --fasta-ref HAEM_V4_final.chr.fa --skip-indels -E --regions-file regions.bed | bcftools call -vm -Oz -o variants.vcf.gz
 ```
 
-```bash
+
 #--- SNP analysis---#
-Some questions we want to answer will be
+Some questions we want to answer will be:
 - how many variants are present?
 - how many variants per sample?
 - how many samples share variants?
@@ -164,7 +164,7 @@ Some questions we want to answer will be
 - what to these patterns of variation look like in the genome?
 
 
-
+````bash
 - how many variants are present?
 The first variants file Ajoke has provided is called "variants.vcf.gz" - thsi is simply the output name from the script above, but we'll need to give these more sensible names
 
@@ -173,9 +173,11 @@ vcftools --gzvcf variants.vcf.gz
 
 #> After filtering, kept 78 out of 78 Individuals
 #> After filtering, kept 22 out of a possible 22 Sites
-
+```
 - so, only 22 SNPs in 78 individuals. We can quickly look at allele frequnecies of the 22 SNPs, and at the same time, look at the positions to determine which amplicons have data (normally we'd know this, however, Ajoke has not told me which samples/data SNP calling has been performed on, so we can work it out from the data)
 
+```bash
+# calculated nucleotide diversity per position for all samples
 vcftools --gzvcf variants.vcf.gz --site-pi
 
 #> geenrated a file called "out.sites.pi". Looking using "cat out.sites.pi" produces the following output
@@ -203,7 +205,7 @@ hcontortus_chr1_Celeg_TT_arrow_pilon	9801463	0.192176
 hcontortus_chr1_Celeg_TT_arrow_pilon	9801524	0.468202
 hcontortus_chr1_Celeg_TT_arrow_pilon	9801571	0.082361
 hcontortus_chr1_Celeg_TT_arrow_pilon	9801614	0.460535
-
+```
 - most SNPs have moderate SNP frequency - this is good and expected in the genetic cross data. A couple of SNPs have low frequency, which "may" be noise. We can keep an eye on these later.
 - looking at the postions of the SNPs, and cross checking against the amplicon database, reveals these are BZ amplicons on chromosome 1, specific PCR18 (n=15), PCR19 (n=2), and PCR24 (n=5). Looking back at the amplicon coverage data (ALL1724), these data make sense, as there is reasonable coverage on these amplicons, whereas there was worse/poor coverage on the other amplicons in that pool.
 
@@ -220,17 +222,18 @@ ISE.list
 UGA.list
 
 - can loop over these to calculate allele frequency pre group
-
+```bash
+# calculate nucleotide diversity per population
 for i in *list; do
     vcftools --gzvcf variants.vcf.gz --keep ${i} --site-pi --out ${i%.list};
     done
 
 #> this outputs 4 files, one for each population, containing the allele frequency data.
-
-# want to generate some visualisations of the data
+```
+- want to generate some visualisations of the data
 - first is a PCA, which we will perform in R. This requires a metadata file, that contains a column containing the "population" IDs and a column containing the "sample" IDs.
 - eg. "metadata.txt" contains (note all fo the samples are there, this is just showing the top part of the file):
-
+```bash
 population	sample_ID
 3/18BZC	157.bams
 3/18BZC	158.bams
@@ -244,13 +247,11 @@ population	sample_ID
 .
 .
 .
-
-- load up R
--
-R
 ```
+- load up R
+
 ```R
-# load the lirbaries - note that these might need to be installed.
+# load the libraries - note that these might need to be installed.
 library(tidyverse)
 library(gdsfmt)
 library(SNPRelate)
